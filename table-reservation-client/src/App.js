@@ -7,6 +7,9 @@ import Alert from './components/Alert';
 import Navbar from './components/Navbar';
 import Info from './components/Info';
 import Signup from './components/signup';
+import ForgotPassword from './components/ForgotPassword';
+import ResetPassword from './components/ResetPassword';
+
 
 function App() {
   const [alert, setAlert] = useState(null);
@@ -71,8 +74,10 @@ function App() {
       <Routes>
         <Route path="/login" element={<Login showAlert={showAlert} />} />
         <Route path="/signup" element={<Signup showAlert={showAlert} />} />
-        <Route path="/" element={<UserPanel/>} />
+        <Route path="/" element={<UserPanel />} />
         <Route path="/info" element={<Info showAlert={showAlert} />} />
+        <Route path="/forgot-password" element={<ForgotPassword />}></Route>
+        <Route path="/reset-password" element={<ResetPassword />} />
         {userDetails?.role === 'admin' && (
           <Route path="/admin" element={<AdminPanel showAlert={showAlert} />} />
         )}

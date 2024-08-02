@@ -5,32 +5,12 @@ const { body, validationResult } = require('express-validator');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const fetchUser = require('../middleware/fetchUser')
-
+const nodemailer = require('nodemailer');
 const JWT_SECTRET = 'dhruvdhruvdhruv';
-// Create a new user
-router.post('/', async (req, res) => {
-  const { name, email } = req.body;
 
-  try {
-    const user = new User({ name, email });
-    await user.save();
-    res.status(201).json(user);
-  } catch (err) {
-    res.status(400).json({ message: err.message });
-  }
-});
 
-// Get a user by ID
-router.get('/:id', async (req, res) => {
-  try {
-    const user = await User.findById(req.params.id);
-    res.json(user);
-  } catch (err) {
-    res.status(404).json({ message: err.message });
-  }
-});
 
-// Route 1 : Create a User using : POST "/api/auth/createUser". No login required
+// Route 1 : Create a User using : POST "/api/users/createUser". No login required
 router.post(
   "/createuser",
   [
@@ -119,6 +99,71 @@ router.post("/getuser" , fetchUser, async (req, res) => {
         res.status(500).send("Internal server Error");
     }
 })
+
+
+router.post('/forgot-password', async (req, res) => {
+  const { email } = req.body;
+  try {
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    const token = jwt.sign({ id: user._id }, JWT_SECTRET, { expiresIn: '1h' });
+    
+
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: 'dhruvsheth01102003@gmail.com',
+        pass: 'jhhozekydjsadaao'
+      }
+    });
+
+    const mailOptions = {
+      from: 'dhruvsheth01102003@gmail.com',
+      to: email,
+      subject: 'Reset Password',
+      text: `Your OTP is ${token}`
+    };
+
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.error(error);
+        return res.status(500).json({ message: 'Error sending email' });
+      } else {
+        res.status(200).json({ message: 'OTP sent successfully' });
+      }
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// Reset Password
+router.post('/reset-password', async (req, res) => {
+  const { otp, newPassword } = req.body;
+
+  try {
+    const decoded = jwt.verify(otp, JWT_SECTRET);
+    const user = await User.findById(decoded.id);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(newPassword, salt);
+    console.log(hashedPassword)
+    user.password = hashedPassword;
+    await user.save();
+
+    res.status(200).json({ message: 'Password updated successfully' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Invalid token or server error' });
+  }
+});
+
 
 
 module.exports = router;
