@@ -19,10 +19,14 @@ const userSchema = new mongoose.Schema({
     enum: ['admin', 'user'],
     default: 'user'
   },
-  date: {
-    type: Date,
-    default: Date.now
+  otp: {
+    type: String,
+    required: false
   },
+  otpExpiry: {
+    type: Date,
+    required: false
+  }
 });
 
 module.exports = mongoose.model("User", userSchema);

@@ -3,27 +3,43 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 function ResetPassword() {
-  const [otp, setToken] = useState('');
+  const [email, setEmail] = useState('');
+  const [otp, setOtp] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
+  const handleResetPassword = (e) => {
     e.preventDefault();
-    try {
-      const response = await axios.post('http://localhost:5000/api/users/reset-password', { otp, newPassword });
-      if (response.data.message === 'Password updated successfully') {
-        navigate('/login');
-      }
-    } catch (error) {
-      console.error(error);
-    }
+    axios.post('http://localhost:5000/api/users/reset-password', { email, otp, newPassword })
+      .then(res => {
+        if (res.data.message === 'Password reset successfully') {
+          navigate('/login');
+        } else {
+          console.log(res.data.message);
+        }
+      })
+      .catch(err => console.log(err));
   };
 
   return (
     <div className="d-flex justify-content-center align-items-center bg-secondary vh-100">
       <div className="bg-white p-3 rounded w-25">
         <h4>Reset Password</h4>
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleResetPassword}>
+          <div className="mb-3">
+            <label htmlFor="email">
+              <strong>Email</strong>
+            </label>
+            <input
+              type="email"
+              placeholder="Enter Email"
+              autoComplete="off"
+              name="email"
+              className="form-control rounded-0"
+              onChange={(e) => setEmail(e.target.value)}
+              value={email}
+            />
+          </div>
           <div className="mb-3">
             <label htmlFor="otp">
               <strong>OTP</strong>
@@ -34,7 +50,8 @@ function ResetPassword() {
               autoComplete="off"
               name="otp"
               className="form-control rounded-0"
-              onChange={(e) => setToken(e.target.value)}
+              onChange={(e) => setOtp(e.target.value)}
+              value={otp}
             />
           </div>
           <div className="mb-3">
@@ -48,10 +65,11 @@ function ResetPassword() {
               name="newPassword"
               className="form-control rounded-0"
               onChange={(e) => setNewPassword(e.target.value)}
+              value={newPassword}
             />
           </div>
           <button type="submit" className="btn btn-success w-100 rounded-0">
-            Update Password
+            Reset Password
           </button>
         </form>
       </div>

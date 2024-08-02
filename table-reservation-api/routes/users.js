@@ -108,8 +108,14 @@ router.post('/forgot-password', async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
-    const token = jwt.sign({ id: user._id }, JWT_SECTRET, { expiresIn: '1h' });
-    
+
+    // Generate a 6-digit OTP
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+
+    // Set OTP and expiration time (1 hour from now)
+    user.otp = otp;
+    user.otpExpiry = Date.now() + 3600000; // 1 hour in milliseconds (1 min)
+    await user.save();
 
     const transporter = nodemailer.createTransport({
       service: 'gmail',
@@ -123,7 +129,7 @@ router.post('/forgot-password', async (req, res) => {
       from: 'dhruvsheth01102003@gmail.com',
       to: email,
       subject: 'Reset Password',
-      text: `Your OTP is ${token}`
+      text: `Your OTP is ${otp}`
     };
 
     transporter.sendMail(mailOptions, (error, info) => {
@@ -140,30 +146,35 @@ router.post('/forgot-password', async (req, res) => {
   }
 });
 
-// Reset Password
 router.post('/reset-password', async (req, res) => {
-  const { otp, newPassword } = req.body;
-
+  const { email, otp, newPassword } = req.body;
   try {
-    const decoded = jwt.verify(otp, JWT_SECTRET);
-    const user = await User.findById(decoded.id);
+    const user = await User.findOne({ email });
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
 
+    // Check if OTP is valid and not expired
+    if (user.otp !== otp || user.otpExpiry < Date.now()) {
+      return res.status(400).json({ message: 'Invalid or expired OTP' });
+    }
+
+    // Hash new password
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(newPassword, salt);
-    console.log(hashedPassword)
+
+    // Update user's password
     user.password = hashedPassword;
+    user.otp = undefined;
+    user.otpExpiry = undefined;
     await user.save();
 
-    res.status(200).json({ message: 'Password updated successfully' });
+    res.status(200).json({ message: 'Password reset successfully' });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: 'Invalid token or server error' });
+    res.status(500).json({ message: 'Server error' });
   }
 });
-
 
 
 module.exports = router;
