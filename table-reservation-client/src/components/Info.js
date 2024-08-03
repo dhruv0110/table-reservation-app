@@ -48,7 +48,7 @@ const Info = () => {
   }, []);
 
   return (
-    <div>
+    <div className='container my-4'>
       <h1>Personal Information</h1>
       {userDetails.name ? (
         <div className='my-4'>

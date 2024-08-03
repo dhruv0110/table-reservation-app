@@ -37,7 +37,7 @@ const Signup = (props) => {
 
     if (json.success) {
       localStorage.setItem('token', json.authtoken);
-      navigate("/user");
+      navigate("/login");
       props.showAlert("Account Created Successfully","success");
     } else {
       props.showAlert("Invalid Credentials","danger");
@@ -57,7 +57,7 @@ const Signup = (props) => {
           <input type="text" className="form-control" id="name" name='name' onChange={onChange} aria-describedby="emailHelp" />
         </div>
         <div className="mb-3">
-          <label htmlFor="email" className="form-label">Email address</label>
+          <label htmlFor="email" className="form-label">Email address (enter valid email)</label>
           <input type="email" className="form-control" id="email" name='email' onChange={onChange} aria-describedby="emailHelp" />
         </div>
         <div className="mb-3">

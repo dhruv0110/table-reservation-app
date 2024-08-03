@@ -2,19 +2,19 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
-function UserPanel() {
+function UserPanel({ showAlert }) {
   let navigate = useNavigate();
   const [tables, setTables] = useState([]);
   const [userId, setUserId] = useState('');
 
   useEffect(() => {
-    if(localStorage.getItem("token")){
+    if (localStorage.getItem("token")) {
       fetchUserDetails();
       fetchTables();
-    }else{
+    } else {
       navigate("/login");
     }
-     // eslint-disable-next-line
+    // eslint-disable-next-line
   }, []);
 
   const fetchUserDetails = async () => {
@@ -28,6 +28,7 @@ function UserPanel() {
       setUserId(response.data._id);
     } catch (error) {
       console.error('Error fetching user details:', error);
+      showAlert('Error fetching user details', 'danger');
     }
   };
 
@@ -37,6 +38,7 @@ function UserPanel() {
       setTables(response.data);
     } catch (error) {
       console.error('Error fetching tables:', error);
+      showAlert('Error fetching tables', 'danger');
     }
   };
 
@@ -49,22 +51,25 @@ function UserPanel() {
         await axios.post('http://localhost:5000/api/tables/unreserve', { number }, {
           headers: { 'auth-token': token },
         });
+        showAlert('Table unreserved', 'success');
       } else if (!isReserved) {
         await axios.post('http://localhost:5000/api/tables/reserve', { number, userId }, {
           headers: { 'auth-token': token },
         });
+        showAlert('Table reserved', 'success');
       } else {
-        console.error('You do not have permission to unreserve this table');
+        showAlert('You do not have permission to unreserve this table', 'danger');
         return;
       }
       fetchTables();
     } catch (error) {
       console.error('Error toggling reservation:', error);
+      showAlert('Error toggling reservation', 'danger');
     }
   };
 
   return (
-    <div className='container'>
+    <div className='container my-4'>
       <h1>Welcome to Table Reservation System</h1>
       <h2>User Panel</h2>
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px', marginTop: '20px' }}>

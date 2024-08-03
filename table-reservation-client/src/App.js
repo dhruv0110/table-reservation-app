@@ -69,15 +69,15 @@ function App() {
 
   return (
     <Router>
-      <Navbar />
+      <Navbar showAlert={showAlert}/>
       <Alert alert={alert} />
       <Routes>
         <Route path="/login" element={<Login showAlert={showAlert} />} />
         <Route path="/signup" element={<Signup showAlert={showAlert} />} />
-        <Route path="/" element={<UserPanel />} />
+        <Route path="/" element={<UserPanel showAlert={showAlert}/>} />
         <Route path="/info" element={<Info showAlert={showAlert} />} />
-        <Route path="/forgot-password" element={<ForgotPassword />}></Route>
-        <Route path="/reset-password" element={<ResetPassword />} />
+        <Route path="/forgot-password" element={<ForgotPassword showAlert={showAlert} />}></Route>
+        <Route path="/reset-password" element={<ResetPassword showAlert={showAlert} />} />
         {userDetails?.role === 'admin' && (
           <Route path="/admin" element={<AdminPanel showAlert={showAlert} />} />
         )}

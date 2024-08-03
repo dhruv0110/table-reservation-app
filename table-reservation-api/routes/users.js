@@ -112,9 +112,13 @@ router.post('/forgot-password', async (req, res) => {
     // Generate a 6-digit OTP
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
 
-    // Set OTP and expiration time (1 hour from now)
+    // Set OTP and expiration time (1 minute from now)
+    const now = new Date();
+    const expiryDate = new Date(now.getTime() + 60000); // 1 minute in milliseconds
+    const formattedExpiry = expiryDate.toTimeString().slice(0, 5); // Format to HH:MM
+
     user.otp = otp;
-    user.otpExpiry = Date.now() + 3600000; // 1 hour in milliseconds (1 min)
+    user.otpExpiry = formattedExpiry; // Store only the time in HH:MM format
     await user.save();
 
     const transporter = nodemailer.createTransport({
@@ -128,7 +132,7 @@ router.post('/forgot-password', async (req, res) => {
     const mailOptions = {
       from: 'dhruvsheth01102003@gmail.com',
       to: email,
-      subject: 'Reset Password',
+      subject: 'Reset Password from TastyFlow',
       text: `Your OTP is ${otp}`
     };
 
@@ -145,6 +149,41 @@ router.post('/forgot-password', async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 });
+
+// Route to verify OTP
+router.post('/verify-otp', async (req, res) => {
+  const { email, otp } = req.body;
+  try {
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    if (user.otp !== otp) {
+      return res.status(400).json({ message: 'Invalid OTP' });
+    }
+
+    const now = new Date();
+    if (user.otpExpiry < now) {
+      // OTP has expired
+      user.otp = undefined;
+      user.otpExpiry = undefined;
+      await user.save();
+      return res.status(400).json({ message: 'OTP has expired. Please request a new one.' });
+    }
+
+    // OTP is valid and not expired
+    user.otp = undefined;
+    user.otpExpiry = undefined;
+    await user.save();
+    res.status(200).json({ message: 'OTP verified successfully' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+module.exports = router;
 
 router.post('/reset-password', async (req, res) => {
   const { email, otp, newPassword } = req.body;

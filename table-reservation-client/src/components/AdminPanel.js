@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
-function AdminPanel() {
+function AdminPanel(props) {
   const [tables, setTables] = useState([]);
 
   useEffect(() => {
@@ -33,6 +33,7 @@ function AdminPanel() {
           },
         }
       );
+      props.showAlert('Table unreserved', 'success');
       fetchTables(); // Refresh the table list to reflect changes
     } catch (error) {
       console.error('Error unreserving table:', error);
@@ -40,7 +41,7 @@ function AdminPanel() {
   };
 
   return (
-    <div className='container'>
+    <div className='container my-4'>
       <h2>Admin Panel</h2>
       <div style={{ marginTop: '20px' }}>
         {tables.map(table => (

@@ -1,24 +1,27 @@
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { useNavigate,useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { toast } from 'react-toastify'; // Import toast from react-toastify
 
-const Navbar = () => {
+const Navbar = (props) => {
   let location = useLocation();
   let navigate = useNavigate();
 
-  const[adminpanel,setAdminpanel] = useState("admin");
+  const [adminpanel, setAdminpanel] = useState("admin");
+  const [userDetails, setUserDetails] = useState({ name: "", email: "", id: "" });
+
   const logOut = () => {
     localStorage.removeItem('token');
     setAdminpanel("");
-    // setUserName("");
+    props.showAlert("Logout Successfully", "success");
     navigate("/login");
   };
-  const [userDetails, setUserDetails] = useState({ name: "", email: "", id: "" }); // State to hold the user's details
+
   const fetchUserDetails = async () => {
     try {
       const token = localStorage.getItem("token");
       if (!token) {
-        return null; // Return null if token is not available
+        return null;
       }
       const response = await fetch("http://localhost:5000/api/users/getuser", {
         method: "POST",
@@ -28,34 +31,37 @@ const Navbar = () => {
         },
       });
       if (response.ok) {
-        return await response.json(); // Return the fetched user's details
+        return await response.json();
       } else {
-        return null; // Return null if fetch fails
+        return null;
       }
     } catch (error) {
       console.error("Error fetching user details:", error.message);
-      return null; // Return null if an error occurs
+      return null;
     }
   };
 
   useEffect(() => {
     const getUserDetails = async () => {
       const userData = await fetchUserDetails();
-      if(localStorage.getItem("token")){
+      if (localStorage.getItem("token")) {
         setUserDetails(userData);
-      }else{
+      } else {
         navigate("/login");
       }
-       // eslint-disable-next-line
       if (userData) {
-        setUserDetails(userData); // Set userDetails to the fetched user's details
+        setUserDetails(userData);
       } else {
-        setUserDetails({ name: "", email: "", id: "" }); // Reset userDetails if fetch fails
+        setUserDetails({ name: "", email: "", id: "" });
       }
     };
 
     getUserDetails();
   }, []);
+
+  const handleAdminClick = () => {
+    props.showAlert("Come to admin panel","success");
+  };
 
   return (
     <div>
@@ -91,13 +97,26 @@ const Navbar = () => {
             </ul>
             {localStorage.getItem("token") ? (
               <div className="d-flex align-items-center" style={{display:'flex'}}>
-                {userDetails.role === 'admin'? <Link className="btn" role="button" to="/admin" style={{marginRight: "10px",color:"white",backgroundColor:"#373838",border:"1px solid #c4c2c2"}}>{adminpanel}</Link>:""}
+                {userDetails.role === 'admin' && 
+                  <Link 
+                    className="btn" 
+                    role="button" 
+                    to="/admin" 
+                    style={{marginRight: "10px", color:"white", backgroundColor:"#373838", border:"1px solid #c4c2c2"}}
+                    onClick={handleAdminClick} // Add onClick handler for the admin button
+                  >
+                    {adminpanel}
+                  </Link>
+                }
                 <button className="btn btn-primary" onClick={logOut}>
                   Logout
                 </button>
-                {(localStorage.getItem('token'))?<Link className="nav-link mx-4" style={{color:'white',fontSize:'20px'}} to="/info"><i className="fa-solid fa-user"></i></Link>:""}
+                {(localStorage.getItem('token')) ? 
+                  <Link className="nav-link mx-4" style={{color:'white',fontSize:'20px'}} to="/info">
+                    <i className="fa-solid fa-user"></i>
+                  </Link> 
+                  : ""}
               </div>
-              
             ) : (
               <form className="d-flex" role="search">
                 <Link className="btn btn-primary" to="/login" role="button">

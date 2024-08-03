@@ -24,7 +24,7 @@ const userSchema = new mongoose.Schema({
     required: false
   },
   otpExpiry: {
-    type: Date,
+    type: String,
     required: false
   }
 });

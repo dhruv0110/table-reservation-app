@@ -55,7 +55,7 @@ const Login = (props) => {
                     />
                 </div>
                 <button type="submit" className="btn btn-primary">Submit</button>
-                <Link to="/forgot-password">Forgot Password</Link>
+                <button className="btn btn-primary mx-2"><Link style={{color:"white",textDecoration:"none"}} to="/forgot-password">Forgot Password</Link></button>
             </form>
         </div>
     );
