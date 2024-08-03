@@ -1,0 +1,102 @@
+.add {
+    width: 100%;
+    max-width: 1225px; /* Ensure it fits well within most screens */
+    margin: 20px auto; /* Center horizontally with minimal margin */
+    color: #333; /* Darker text color for better readability */
+    font-size: 14px; /* Slightly smaller font size for compactness */
+    display: flex;
+    flex-direction: column;
+    gap: 20px; /* Reduced gap for compact layout */
+}
+.list p.header {
+    font-size: 18px; /* Larger font size for prominence */
+    font-weight: bold; /* Bold text to emphasize importance */
+    color: #100d0d; /* Dark color for readability */
+    margin-bottom: 20px; /* Space below the header */
+    text-align: center; /* Center align for a neat appearance */
+    border-bottom: 2px solid #ddd; /* Underline for visual separation */
+    padding-bottom: 10px; /* Padding to add space between text and underline */
+}
+
+.add form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px; /* Reduced gap between form sections */
+}
+
+.add-img-upload {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.add-img-upload label {
+    cursor: pointer;
+}
+
+.add-img-upload img {
+    width: 100px; /* Smaller image size to fit better */
+    height: 100px; /* Maintain aspect ratio */
+    object-fit: cover; /* Cover the area of the image */
+    border: 1px solid #ccc; /* Subtle border */
+    border-radius: 8px; /* Rounded corners for image area */
+    transition: border-color 0.3s ease;
+}
+
+.add-img-upload img:hover {
+    border-color: #666; /* Darker border on hover */
+}
+
+.add-product-name,
+.add-product-description {
+    width: 100%;
+    max-width: 600px; /* Maximum width for better control */
+}
+
+.add-product-name input,
+.add-product-description textarea {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+    box-sizing: border-box; /* Include padding and border in element's total width and height */
+}
+
+.add-product-description textarea {
+    min-height: 100px; /* Ensure a minimum height for text area */
+    resize: vertical; /* Allow vertical resizing only */
+}
+
+
+.add-category-price > div {
+    flex: 1; /* Allow items to grow and fill available space */
+    min-width: 200px; /* Ensure minimum width for input fields */
+}
+
+.add-category-price select,
+.add-category-price input {
+    width: 49%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+}
+
+.add-btn {
+    width: 100%;
+    max-width: 120px; /* Smaller button size */
+    padding: 10px;
+    border: none;
+    background-color: #333; /* Darker background for button */
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.add-btn:hover {
+    background-color: #555; /* Lighter background on hover */
+    transform: scale(1.05); /* Slightly enlarge button on hover */
+}

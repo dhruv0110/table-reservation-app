@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import UserPanel from './components/UserPanel';
-import AdminPanel from './components/AdminPanel';
+// import AdminPanel from './components/TableShow';
 import Login from './components/Login';
 import Alert from './components/Alert';
 import Navbar from './components/Navbar';
@@ -9,6 +9,11 @@ import Info from './components/Info';
 import Signup from './components/signup';
 import ForgotPassword from './components/ForgotPassword';
 import ResetPassword from './components/ResetPassword';
+import Admin from './components/Admin';
+import TableShow from './components/TableShow';
+// import List from './components/List';
+import Add from './components/Add';
+import List from './components/List';
 
 
 function App() {
@@ -79,9 +84,15 @@ function App() {
         <Route path="/forgot-password" element={<ForgotPassword showAlert={showAlert} />}></Route>
         <Route path="/reset-password" element={<ResetPassword showAlert={showAlert} />} />
         {userDetails?.role === 'admin' && (
-          <Route path="/admin" element={<AdminPanel showAlert={showAlert} />} />
+          <>          
+        <Route path="/admin" element={<Admin showAlert={showAlert} />} />
+        <Route path="/admin/table" element={<TableShow showAlert={showAlert} />} />
+        <Route path="/list" element={<List showAlert={showAlert} />} />
+        <Route path="/admin/add" element={<Add showAlert={showAlert} />} />
+        </>
         )}
         <Route path="*" element={<Navigate to="/" />} />
+          
       </Routes>
     </Router>
   );

@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import Sidebar from './Sidebar/Sidebar';
 
-function AdminPanel(props) {
+function TableShow(props) {
   const [tables, setTables] = useState([]);
 
   useEffect(() => {
@@ -40,12 +41,13 @@ function AdminPanel(props) {
     }
   };
 
-  return (
-    <div className='container my-4'>
-      <h2>Admin Panel</h2>
-      <div style={{ marginTop: '20px' }}>
+  return (<div style={{display:"flex"}}>
+    <Sidebar/>
+    <div className='container my-5' style={{marginLeft:"10px",width:"100%"}}>
+      <h2>Tables Reservation</h2>
+      <div style={{display: 'flex', flexWrap: 'wrap', gap: '10px', marginTop: '20px',width:"100%"}}>
         {tables.map(table => (
-          <div key={table.number} style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
+          <div key={table.number} style={{marginBottom: '10px', display: 'flex', alignItems: 'center'  }}>
             <button
               onClick={() => table.reserved && unreserveTable(table.number)}
               style={{
@@ -58,6 +60,7 @@ function AdminPanel(props) {
                 fontSize: '16px',
                 minWidth: '80px',
                 textAlign: 'center',
+                display:"inline"
               }}
             >
               Table {table.number}
@@ -71,7 +74,8 @@ function AdminPanel(props) {
         ))}
       </div>
     </div>
+    </div>
   );
 }
 
-export default AdminPanel;
+export default TableShow;

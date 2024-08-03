@@ -1,0 +1,80 @@
+.list {
+    width: 100%;
+    max-width: 1225px; /* Ensure it fits well within larger screens */
+    margin: 20px auto; /* Center horizontally with minimal margin */
+    color: #333; /* Darker text color for better readability */
+    font-size: 14px; /* Slightly larger font size for readability */
+}
+
+.list p {
+    margin: 0; /* Remove default margin */
+}
+
+.list-table {
+    display: flex;
+    flex-direction: column;
+    gap: 15px; /* Gap between rows */
+}
+
+.list-table-format {
+    display: grid;
+    grid-template-columns: 1fr 2fr 1.5fr 1fr 0.5fr; /* Adjusted column widths for better layout */
+    align-items: center;
+    gap: 10px;
+    padding: 12px 15px;
+    border: 1px solid #ddd; /* Lighter border */
+    border-radius: 8px; /* Rounded corners for modern look */
+    background-color: #f9f9f9; /* Light background for rows */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+    transition: background-color 0.3s ease; /* Smooth transition for hover effect */
+}
+
+.list-table-format:hover {
+    background-color: #f1f1f1; /* Slightly darker background on hover */
+}
+
+.list-table-format img {
+    width: 80px; /* Larger image size for better visibility */
+    height: 60px; /* Maintain aspect ratio */
+    object-fit: cover; /* Cover the image area */
+    border-radius: 4px; /* Rounded corners for images */
+}
+
+.list-table-format b {
+    font-weight: 600; /* Make headings bolder */
+}
+
+.list-table-format.title {
+    background-color: #eaeaea; /* Different background for headers */
+    font-weight: 700; /* Make header text bold */
+}
+
+.list-table-format p {
+    margin: 0; /* Remove default margin for consistency */
+}
+
+.list-table-format .cursor {
+    color: #d9534f; /* Red color for delete action */
+    cursor: pointer;
+    transition: color 0.3s ease; /* Smooth transition for color change */
+}
+
+.list-table-format .cursor:hover {
+    color: #c9302c; /* Darker red on hover */
+}
+
+@media(max-width: 768px) {
+    .list-table-format {
+        grid-template-columns: 1fr 2fr 1fr 1fr; /* Adjust columns for smaller screens */
+    }
+}
+
+@media(max-width: 600px) {
+    .list-table-format {
+        grid-template-columns: 1fr 2fr; /* Further adjust for very small screens */
+        gap: 10px;
+    }
+    .list-table-format.title {
+        display: none; /* Hide headers on very small screens */
+    }
+}

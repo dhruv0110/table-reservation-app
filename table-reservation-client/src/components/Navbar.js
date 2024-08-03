@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useNavigate, useLocation } from 'react-router-dom';
-import { toast } from 'react-toastify'; // Import toast from react-toastify
 
 const Navbar = (props) => {
   let location = useLocation();
@@ -67,9 +66,9 @@ const Navbar = (props) => {
     <div>
       <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
         <div className="container-fluid">
-          <Link className="navbar-brand" to="/">
-            Navbar
-          </Link>
+        {
+          userDetails.role === "admin"?<Link className="navbar-brand" to="/">Admin</Link> : <Link className="navbar-brand" to="/">User</Link> 
+        }
           <button
             className="navbar-toggler"
             type="button"

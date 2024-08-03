@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const tableRoutes = require('./routes/tables');
 const userRoutes = require('./routes/users');
+const foodRoute = require("./routes/foodRoute")
 require('dotenv').config();
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -30,5 +31,7 @@ connectToMongo();
 
 app.use('/api/tables', tableRoutes);
 app.use('/api/users', userRoutes); 
+app.use("/api/food",foodRoute);
+app.use("/uploads",express.static('uploads'))
 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
