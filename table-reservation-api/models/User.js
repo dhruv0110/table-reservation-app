@@ -23,10 +23,10 @@ const userSchema = new mongoose.Schema({
     required: false
   },
   otpExpiry: {
-    type: Date, // Change to Date type for accurate comparison
+    type: String, // Change to Date type for accurate comparison
     required: false
   },
-  contact: { // Add contact field
+  contact: { 
     type: String,
     required: false
   },

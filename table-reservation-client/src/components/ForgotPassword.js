@@ -9,6 +9,11 @@ function ForgotPassword(props) {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    if (!email) {
+      props.showAlert('Please enter your email', 'error');
+      return;
+    }
+
     // Show loading alert
     props.showAlert('Sending OTP...', 'info');
 

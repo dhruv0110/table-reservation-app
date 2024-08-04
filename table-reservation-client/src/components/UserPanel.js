@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { Nav, Tab, Row, Col, Button, Spinner } from "react-bootstrap";
+import { Nav, Tab, Row, Col, Spinner } from "react-bootstrap";
 import FoodDisplay from "./FoodDisplay";
+import './UserPanel.css';
 
 function UserPanel({ showAlert }) {
   let navigate = useNavigate();
@@ -117,7 +118,7 @@ function UserPanel({ showAlert }) {
                 <Nav.Link eventKey="tables">Tables</Nav.Link>
               </Nav.Item>
               <Nav.Item>
-                <Nav.Link eventKey="food">Food List</Nav.Link>
+                <Nav.Link eventKey="food" className="foodlist">Food List</Nav.Link>
               </Nav.Item>
             </Nav>
           </Col>
@@ -125,27 +126,11 @@ function UserPanel({ showAlert }) {
             <Tab.Content>
               <Tab.Pane eventKey="tables">
                 <h2>User Panel</h2>
-                <div
-                  style={{
-                    display: "flex",
-                    flexWrap: "wrap",
-                    gap: "10px",
-                    marginTop: "20px",
-                    width: "100%",
-                  }}
-                >
+                <div className="table-button-container">
                   {sortedTables.map((table) => (
                     <div
                       key={table.number}
-                      style={{
-                        flex: "1 1 calc(33.333% - 10px)", // Adjust to 3 items per row
-                        maxWidth: "calc(33.333% - 10px)",
-                        marginBottom: "10px",
-                        display: "flex",
-                        flexDirection: "column",
-                        alignItems: "center",
-                        boxSizing: "border-box",
-                      }}
+                      className="table-button"
                     >
                       <button
                         onClick={() =>
@@ -155,23 +140,8 @@ function UserPanel({ showAlert }) {
                             table.reservedBy?._id
                           )
                         }
-                        style={{
-                          backgroundColor: table.reserved
-                            ? "#f8d7da"
-                            : "#d4edda",
-                          color: table.reserved ? "#721c24" : "#155724",
-                          border: "none",
-                          padding: "10px 20px",
-                          cursor: loadingTable === table.number ? "not-allowed" : "pointer",
-                          borderRadius: "4px",
-                          fontSize: "16px",
-                          width: "100%",
-                          textAlign: "center",
-                          transition: "background-color 0.3s, transform 0.2s",
-                          transform: loadingTable === table.number ? "scale(0.98)" : "scale(1)",
-                          position: "relative", // Ensure positioning for spinner
-                        }}
-                        disabled={loadingTable === table.number || (table.reserved && table.reservedBy?._id !== userId)} // Disable button if loading or not the owner
+                        className={`table-button-button ${table.reserved ? 'reserved' : ''} ${loadingTable === table.number ? 'loading' : ''}`}
+                        disabled={loadingTable === table.number || (table.reserved && table.reservedBy?._id !== userId)}
                       >
                         {loadingTable === table.number ? (
                           <Spinner animation="border" size="sm" style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)" }} />
@@ -180,7 +150,7 @@ function UserPanel({ showAlert }) {
                         )}
                       </button>
                       {table.reserved && (
-                        <div style={{ fontSize: "14px", color: "#6c757d", marginTop: "5px", textAlign: "center" }}>
+                        <div className="table-button-reserved">
                           Reserved
                         </div>
                       )}

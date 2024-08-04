@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import './Info.css';
 
 const Info = () => {
   const [userDetails, setUserDetails] = useState({ name: "", email: "", id: "" }); // State to hold the user's details
@@ -48,17 +49,31 @@ const Info = () => {
   }, []);
 
   return (
-    <div className='container my-4'>
+    <div className='container info my-4'>
       <h1>Personal Information</h1>
       {userDetails.name ? (
-        <div className='my-4'>
-          <p>User Name: {userDetails.name}</p>
-          <p>User Email: {userDetails.email}</p>
-          <p>User ID: {userDetails._id}</p>
-          <p>User ID: {userDetails.role}</p>
-        </div>
+        <table className='user-table'>
+          <tbody>
+            <tr>
+              <th>User Name:</th>
+              <td>{userDetails.name}</td>
+            </tr>
+            <tr>
+              <th>User Email:</th>
+              <td>{userDetails.email}</td>
+            </tr>
+            <tr>
+              <th>User ID:</th>
+              <td>{userDetails._id}</td>
+            </tr>
+            <tr>
+              <th>User Role:</th>
+              <td>{userDetails.role}</td>
+            </tr>
+          </tbody>
+        </table>
       ) : (
-        <p>No user details available.</p>
+        <p className='no-details'>No user details available.</p>
       )}
     </div>
   );

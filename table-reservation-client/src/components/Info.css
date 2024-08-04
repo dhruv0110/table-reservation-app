@@ -1,0 +1,42 @@
+.info {
+    padding: 20px;
+    border-radius: 10px;
+    background-color: #f9f9f9;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .info h1 {
+    font-size: 2rem;
+    margin-bottom: 20px;
+    color: #333;
+    text-align: center;
+  }
+  
+  .info .user-table {
+    width: 100%;
+    margin: 0 auto;
+    border-collapse: collapse;
+  }
+  
+  .info .user-table th, .user-table td {
+    padding: 12px;
+    text-align: left;
+    width: 50%; /* Ensure columns take up equal space */
+  }
+  
+  .info .user-table th {
+    background-color: #f2f2f25b;
+    color: #333;
+    font-weight: normal;
+  }
+  
+  .info .user-table td {
+    color: #555;
+  }
+  
+  .info .no-details {
+    font-size: 1.2rem;
+    color: #555;
+    text-align: center;
+  }
+  
