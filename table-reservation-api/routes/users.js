@@ -17,38 +17,41 @@ router.post(
     body("name", "Enter a valid name").isLength({ min: 3 }),
     body("email", "Enter a valid email").isEmail(),
     body("password", "Enter a valid password").isLength({ min: 5 }),
+    body("contact", "Enter a valid contact number").optional().isLength({ min: 10 }), // Add validation for contact
   ],
   async (req, res) => {
     let success = false;
-    // if there are error return bad request and the errors
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
-    //check whether the user with this email exists already
+
     try {
-      let user = await User.findOne({success, email: req.body.email });
+      let user = await User.findOne({ email: req.body.email });
       if (user) {
         return res
           .status(400)
-          .json({ error: "Sorry a user with this email already exists" });
+          .json({ error: "Sorry, a user with this email already exists" });
       }
-      // hashing of the password
+
       const salt = await bcrypt.genSalt(10);
-      const secPass = await bcrypt.hash(req.body.password,salt);
-      //create a new user
+      const secPass = await bcrypt.hash(req.body.password, salt);
+
       user = await User.create({
         name: req.body.name,
         password: secPass,
         email: req.body.email,
+        contact: req.body.contact, // Include contact field
       });
+
       const data = {
-        user:{
-            id : user.id,
+        user: {
+          id: user.id,
         }
-      }
-     const authtoken = jwt.sign(data,JWT_SECTRET);
-     success = true;
+      };
+
+      const authtoken = jwt.sign(data, JWT_SECTRET);
+      success = true;
       res.json({ success, authtoken });
     } catch (error) {
       console.error(error.message);
@@ -56,6 +59,7 @@ router.post(
     }
   }
 );
+
 
 //Route 2 : authenticate a User using : POST "/api/auth/login". No login required
 

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const Signup = (props) => {
@@ -6,17 +6,18 @@ const Signup = (props) => {
     name: "",
     email: "",
     password: "",
-    cpassword: ""
+    cpassword: "",
+    contact: "" // Add contact field
   });
 
   let navigate = useNavigate();
-  const { name, email, password, cpassword } = credentials;
+  const { name, email, password, cpassword, contact } = credentials;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (password !== cpassword) {
-      props.showAlert("Password not match","danger");
+      props.showAlert("Passwords do not match", "danger");
       return;
     }
 
@@ -29,6 +30,7 @@ const Signup = (props) => {
         name,
         email,
         password,
+        contact, // Include contact field
       }),
     });
 
@@ -38,11 +40,11 @@ const Signup = (props) => {
     if (json.success) {
       localStorage.setItem('token', json.authtoken);
       navigate("/login");
-      props.showAlert("Account Created Successfully","success");
+      props.showAlert("Account Created Successfully", "success");
     } else {
-      props.showAlert("Invalid Credentials","danger");
+      props.showAlert("Invalid Credentials", "danger");
     }
-  }
+  };
 
   const onChange = (e) => {
     setCredentials({ ...credentials, [e.target.name]: e.target.value });
@@ -54,11 +56,15 @@ const Signup = (props) => {
       <form onSubmit={handleSubmit}>
         <div className="mb-3 my-4">
           <label htmlFor="name" className="form-label">Name</label>
-          <input type="text" className="form-control" id="name" name='name' onChange={onChange} aria-describedby="emailHelp" />
+          <input type="text" className="form-control" id="name" name='name' onChange={onChange} aria-describedby="nameHelp" />
         </div>
         <div className="mb-3">
-          <label htmlFor="email" className="form-label">Email address (enter valid email)</label>
+          <label htmlFor="email" className="form-label">Email address</label>
           <input type="email" className="form-control" id="email" name='email' onChange={onChange} aria-describedby="emailHelp" />
+        </div>
+        <div className="mb-3">
+          <label htmlFor="contact" className="form-label">Contact Number</label>
+          <input type="text" className="form-control" id="contact" name='contact' onChange={onChange} aria-describedby="contactHelp" />
         </div>
         <div className="mb-3">
           <label htmlFor="password" className="form-label">Password</label>
@@ -71,7 +77,7 @@ const Signup = (props) => {
         <button type="submit" className="btn btn-primary">Submit</button>
       </form>
     </div>
-  )
-}
+  );
+};
 
 export default Signup;

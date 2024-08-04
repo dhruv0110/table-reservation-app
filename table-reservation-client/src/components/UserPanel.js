@@ -1,20 +1,22 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { Nav, Tab, Row, Col, Button, Spinner } from "react-bootstrap";
 import FoodDisplay from "./FoodDisplay";
 
 function UserPanel({ showAlert }) {
   let navigate = useNavigate();
   const [tables, setTables] = useState([]);
   const [userId, setUserId] = useState("");
-  const [food_list, setFoodList] = useState([]);  // State to store food list
+  const [foodList, setFoodList] = useState([]); // State to store food list
   const [category, setCategory] = useState("All");
+  const [loadingTable, setLoadingTable] = useState(null); // Track the table number being reserved
 
   useEffect(() => {
     if (localStorage.getItem("token")) {
       fetchUserDetails();
       fetchTables();
-      fetchFoodList();  // Fetch food data when component mounts
+      fetchFoodList(); // Fetch food data when component mounts
     } else {
       navigate("/login");
     }
@@ -53,7 +55,7 @@ function UserPanel({ showAlert }) {
   const fetchFoodList = async () => {
     try {
       const response = await axios.get("http://localhost:5000/api/food/list");
-      setFoodList(response.data.data);  // Update state with food data
+      setFoodList(response.data.data); // Update state with food data
     } catch (error) {
       console.error("Error fetching food list:", error);
       showAlert("Error fetching food list", "danger");
@@ -62,6 +64,7 @@ function UserPanel({ showAlert }) {
 
   const toggleReservation = async (number, isReserved, reservedBy) => {
     try {
+      setLoadingTable(number); // Set loading state for the table being reserved
       const token = localStorage.getItem("token");
       if (!token) return;
 
@@ -88,69 +91,111 @@ function UserPanel({ showAlert }) {
           "You do not have permission to unreserve this table",
           "danger"
         );
+        setLoadingTable(null); // Reset loading state
         return;
       }
       fetchTables();
     } catch (error) {
       console.error("Error toggling reservation:", error);
       showAlert("Error toggling reservation", "danger");
+    } finally {
+      setLoadingTable(null); // Reset loading state
     }
   };
+
+  // Sort tables by number in ascending order
+  const sortedTables = [...tables].sort((a, b) => a.number - b.number);
 
   return (
     <div className="container my-4">
       <h1>Welcome to Table Reservation System</h1>
-      <h2>User Panel</h2>
-      <div
-        style={{
-          display: "flex",
-          flexWrap: "wrap",
-          gap: "10px",
-          marginTop: "20px",
-        }}
-      >
-        {tables.map((table) => (
-          <div
-            key={table.number}
-            style={{
-              marginBottom: "10px",
-              display: "flex",
-              alignItems: "center",
-            }}
-          >
-            <button
-              onClick={() =>
-                toggleReservation(
-                  table.number,
-                  table.reserved,
-                  table.reservedBy?._id
-                )
-              }
-              style={{
-                backgroundColor: table.reserved ? "#f8d7da" : "#d4edda",
-                color: table.reserved ? "#721c24" : "#155724",
-                border: "none",
-                padding: "10px 20px",
-                cursor: "pointer",
-                borderRadius: "4px",
-                fontSize: "16px",
-                minWidth: "80px",
-                marginRight: "10px",
-              }}
-              disabled={table.reserved && table.reservedBy?._id !== userId} // Disable button if not the owner
-            >
-              Table {table.number}
-            </button>
-            {table.reserved && (
-              <div style={{ fontSize: "14px", color: "#6c757d" }}>
-                Reserved by: {table.reservedBy?.name || "Unknown"} (
-                {table.reservedBy?.email || "Unknown"})
-              </div>
-            )}
-          </div>
-        ))}
-      </div>
-      <FoodDisplay category={category} food_list={food_list} />  {/* Pass food_list as prop */}
+      <Tab.Container defaultActiveKey="tables">
+        <Row className="no-gutters">
+          <Col xs={12} md={3} className="p-3 my-2">
+            <Nav variant="pills" className="flex-column">
+              <Nav.Item>
+                <Nav.Link eventKey="tables">Tables</Nav.Link>
+              </Nav.Item>
+              <Nav.Item>
+                <Nav.Link eventKey="food">Food List</Nav.Link>
+              </Nav.Item>
+            </Nav>
+          </Col>
+          <Col xs={12} md={9} className="p-3">
+            <Tab.Content>
+              <Tab.Pane eventKey="tables">
+                <h2>User Panel</h2>
+                <div
+                  style={{
+                    display: "flex",
+                    flexWrap: "wrap",
+                    gap: "10px",
+                    marginTop: "20px",
+                    width: "100%",
+                  }}
+                >
+                  {sortedTables.map((table) => (
+                    <div
+                      key={table.number}
+                      style={{
+                        flex: "1 1 calc(33.333% - 10px)", // Adjust to 3 items per row
+                        maxWidth: "calc(33.333% - 10px)",
+                        marginBottom: "10px",
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        boxSizing: "border-box",
+                      }}
+                    >
+                      <button
+                        onClick={() =>
+                          toggleReservation(
+                            table.number,
+                            table.reserved,
+                            table.reservedBy?._id
+                          )
+                        }
+                        style={{
+                          backgroundColor: table.reserved
+                            ? "#f8d7da"
+                            : "#d4edda",
+                          color: table.reserved ? "#721c24" : "#155724",
+                          border: "none",
+                          padding: "10px 20px",
+                          cursor: loadingTable === table.number ? "not-allowed" : "pointer",
+                          borderRadius: "4px",
+                          fontSize: "16px",
+                          width: "100%",
+                          textAlign: "center",
+                          transition: "background-color 0.3s, transform 0.2s",
+                          transform: loadingTable === table.number ? "scale(0.98)" : "scale(1)",
+                          position: "relative", // Ensure positioning for spinner
+                        }}
+                        disabled={loadingTable === table.number || (table.reserved && table.reservedBy?._id !== userId)} // Disable button if loading or not the owner
+                      >
+                        {loadingTable === table.number ? (
+                          <Spinner animation="border" size="sm" style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)" }} />
+                        ) : (
+                          `Table ${table.number}`
+                        )}
+                      </button>
+                      {table.reserved && (
+                        <div style={{ fontSize: "14px", color: "#6c757d", marginTop: "5px", textAlign: "center" }}>
+                          Reserved
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </Tab.Pane>
+              <Tab.Pane eventKey="food">
+                <h2>Food List</h2>
+                <FoodDisplay category={category} food_list={foodList} /> {/* Pass foodList as prop */}
+              </Tab.Pane>
+            </Tab.Content>
+          </Col>
+        </Row>
+      </Tab.Container>
     </div>
   );
 }

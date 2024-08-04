@@ -6,7 +6,7 @@ const fetchUser = require('../middleware/fetchUser');
 // Get all tables
 router.get('/', async (req, res) => {
   try {
-    const tables = await Table.find().populate('reservedBy', 'name email');
+    const tables = await Table.find().populate('reservedBy', 'name contact');
     res.json(tables);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -23,7 +23,7 @@ router.post('/reserve', fetchUser, async (req, res) => {
       table.reserved = true;
       table.reservedBy = userId;
       await table.save();
-      const populatedTable = await Table.findById(table._id).populate('reservedBy', 'name email');
+      const populatedTable = await Table.findById(table._id).populate('reservedBy');
       res.json(populatedTable);
     } else {
       res.status(400).json({ message: 'Table is already reserved' });
@@ -78,6 +78,31 @@ router.post('/admin/unreserve', fetchUser, async (req, res) => {
     table.reservedBy = null;
     await table.save();
     res.json(table);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+// Add a new table
+router.post('/add', async (req, res) => {
+  try {
+    const { number } = req.body;
+    const table = new Table({ number });
+    await table.save();
+    res.json(table);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+// Delete a table
+router.delete('/delete', async (req, res) => {
+  try {
+    const { number } = req.body;
+    const table = await Table.findOneAndDelete({ number });
+    if (!table) {
+      return res.status(404).json({ message: 'Table not found' });
+    }
+    res.json({ message: 'Table deleted' });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

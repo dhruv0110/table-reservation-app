@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Sidebar from './Sidebar/Sidebar';
+import './TableShow.css'; // Import the CSS file
 
 function TableShow(props) {
   const [tables, setTables] = useState([]);
+  const [tableNumber, setTableNumber] = useState('');
 
   useEffect(() => {
     fetchTables();
@@ -15,6 +17,29 @@ function TableShow(props) {
       setTables(response.data);
     } catch (error) {
       console.error('Error fetching tables:', error);
+    }
+  };
+
+  const addTable = async () => {
+    try {
+      await axios.post('http://localhost:5000/api/tables/add', { number: tableNumber });
+      props.showAlert('Table added', 'success');
+      fetchTables(); // Refresh the table list to reflect changes
+      setTableNumber(''); // Clear input field
+    } catch (error) {
+      console.error('Error adding table:', error);
+      props.showAlert('Error adding table', 'error');
+    }
+  };
+
+  const deleteTable = async (number) => {
+    try {
+      await axios.delete('http://localhost:5000/api/tables/delete', { data: { number } });
+      props.showAlert('Table deleted', 'success');
+      fetchTables(); // Refresh the table list to reflect changes
+    } catch (error) {
+      console.error('Error deleting table:', error);
+      props.showAlert('Error deleting table', 'error');
     }
   };
 
@@ -41,39 +66,47 @@ function TableShow(props) {
     }
   };
 
-  return (<div style={{display:"flex"}}>
-    <Sidebar/>
-    <div className='container my-5' style={{marginLeft:"10px",width:"100%"}}>
-      <h2>Tables Reservation</h2>
-      <div style={{display: 'flex', flexWrap: 'wrap', gap: '10px', marginTop: '20px',width:"100%"}}>
-        {tables.map(table => (
-          <div key={table.number} style={{marginBottom: '10px', display: 'flex', alignItems: 'center'  }}>
-            <button
-              onClick={() => table.reserved && unreserveTable(table.number)}
-              style={{
-                backgroundColor: table.reserved ? '#f8d7da' : '#d4edda', // Red for reserved, green for available
-                color: table.reserved ? '#721c24' : '#155724', // Dark red for reserved, dark green for available
-                border: 'none',
-                padding: '10px 20px',
-                cursor: 'pointer',
-                borderRadius: '4px',
-                fontSize: '16px',
-                minWidth: '80px',
-                textAlign: 'center',
-                display:"inline"
-              }}
-            >
-              Table {table.number}
-            </button>
-            {table.reserved && (
-              <div style={{ marginLeft: '20px', fontSize: '14px', color: '#6c757d' }}>
-                Reserved by: {table.reservedBy?.name || 'Unknown'} ({table.reservedBy?.email || 'Unknown'})
-              </div>
-            )}
-          </div>
-        ))}
+  // Sort tables by number in ascending order
+  const sortedTables = [...tables].sort((a, b) => a.number - b.number);
+
+  return (
+    <div style={{ display: "flex" }}>
+      <Sidebar />
+      <div className='container my-5'>
+        <h2>Tables Reservation</h2>
+        <div className='table-input-container'>
+          <input 
+            type="number" 
+            value={tableNumber}
+            onChange={(e) => setTableNumber(e.target.value)}
+            placeholder="Table Number"
+          />
+          <button onClick={addTable}>Add Table</button>
+        </div>
+        <div className='table-list'>
+          {sortedTables.map(table => (
+            <div key={table.number} className='table-item'>
+              <button
+                onClick={() => table.reserved && unreserveTable(table.number)}
+                className={table.reserved ? 'unreserve-button' : 'reserve-button'}
+              >
+                Table {table.number}
+              </button>
+              {table.reserved && (
+                <div className='reserved-info'>
+                  Reserved by: {table.reservedBy?.name || 'Unknown'} ({table.reservedBy?.contact || 'Unknown'})
+                </div>
+              )}
+              <button
+                onClick={() => deleteTable(table.number)}
+                className='delete-button'
+              >
+                Delete
+              </button>
+            </div>
+          ))}
+        </div>
       </div>
-    </div>
     </div>
   );
 }

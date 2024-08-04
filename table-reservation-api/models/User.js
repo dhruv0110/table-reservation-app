@@ -1,4 +1,3 @@
-// User.js
 const mongoose = require("mongoose");
 
 const userSchema = new mongoose.Schema({
@@ -14,7 +13,7 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  role: { // Add role field
+  role: { 
     type: String,
     enum: ['admin', 'user'],
     default: 'user'
@@ -24,6 +23,10 @@ const userSchema = new mongoose.Schema({
     required: false
   },
   otpExpiry: {
+    type: Date, // Change to Date type for accurate comparison
+    required: false
+  },
+  contact: { // Add contact field
     type: String,
     required: false
   },
