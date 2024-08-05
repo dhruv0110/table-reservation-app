@@ -6,7 +6,7 @@ function ResetPassword(props) {
   const [email, setEmail] = useState('');
   const [otp, setOtp] = useState('');
   const [newPassword, setNewPassword] = useState('');
-  const [timer, setTimer] = useState(60); // Timer in seconds
+  const [timer, setTimer] = useState(120); // Timer set to 120 seconds (2 minutes)
   const [isTimerActive, setIsTimerActive] = useState(true); // To handle timer activation
   const [alertShown, setAlertShown] = useState(false); // Flag to ensure alert is shown only once
   const navigate = useNavigate();
@@ -23,7 +23,7 @@ function ResetPassword(props) {
       props.showAlert('OTP expired. Please request a new one.', 'danger');
       setAlertShown(true); // Set the flag to true after showing the alert
     }
-  }, [isTimerActive, timer, alertShown]);
+  }, [isTimerActive, timer, alertShown, props]);
 
   const handleResetPassword = (e) => {
     e.preventDefault();

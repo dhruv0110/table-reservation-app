@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import CustomButton from './CustomButton';
+import "./CustomeButton.css"
 
 function ForgotPassword(props) {
   const [email, setEmail] = useState('');
@@ -50,7 +52,7 @@ function ForgotPassword(props) {
 
   return (
     <div className="d-flex justify-content-center align-items-center vh-100" style={{ backgroundColor: "#cdcfd1" }}>
-      <div className="bg-white p-3 rounded w-25">
+      <div className="bg-white p-3 rounded w-25" style={{height:"190px"}}>
         <h4>Forgot Password</h4>
         <form onSubmit={handleSubmit}>
           <div className="mb-3">
@@ -66,10 +68,11 @@ function ForgotPassword(props) {
               onChange={(e) => setEmail(e.target.value)}
               value={email}
             />
+            
+
+          <CustomButton/>
+          
           </div>
-          <button type="submit" className="btn btn-primary w-100">
-            Send
-          </button>
         </form>
       </div>
     </div>
