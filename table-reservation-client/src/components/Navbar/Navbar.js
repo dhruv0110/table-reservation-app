@@ -6,12 +6,12 @@ const Navbar = (props) => {
   let location = useLocation();
   let navigate = useNavigate();
 
-  const [adminpanel, setAdminpanel] = useState("admin");
+  // const [adminpanel, setAdminpanel] = useState("admin");
   const [userDetails, setUserDetails] = useState({ name: "", email: "", id: "" });
 
   const logOut = () => {
     localStorage.removeItem('token');
-    setAdminpanel("");
+    // setAdminpanel("");
     props.showAlert("Logout Successfully", "success");
     navigate("/login");
   };
@@ -39,6 +39,9 @@ const Navbar = (props) => {
       return null;
     }
   };
+  const handleAdminClick = () => {
+    props.showAlert("Come to admin panel","success");
+  };
 
   useEffect(() => {
     const getUserDetails = async () => {
@@ -56,11 +59,9 @@ const Navbar = (props) => {
     };
 
     getUserDetails();
-  }, []);
+  },  [localStorage.getItem("token")]);
 
-  const handleAdminClick = () => {
-    props.showAlert("Come to admin panel","success");
-  };
+ 
 
   return (
     <div>
@@ -104,7 +105,7 @@ const Navbar = (props) => {
                     style={{marginRight: "10px", color:"white", backgroundColor:"#373838", border:"1px solid #c4c2c2"}}
                     onClick={handleAdminClick} // Add onClick handler for the admin button
                   >
-                    {adminpanel}
+                  Admin
                   </Link>
                 }
                 <button className="btn btn-primary" onClick={logOut}>
