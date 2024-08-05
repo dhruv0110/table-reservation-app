@@ -1,19 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import UserPanel from './components/UserPanel';
+import UserPanel from './components/UserPanel/UserPanel';
 // import AdminPanel from './components/TableShow';
-import Login from './components/Login';
-import Alert from './components/Alert';
-import Navbar from './components/Navbar';
-import Info from './components/Info';
-import Signup from './components/signup';
-import ForgotPassword from './components/ForgotPassword';
-import ResetPassword from './components/ResetPassword';
-import Admin from './components/Admin';
-import TableShow from './components/TableShow';
+import Login from './components/LoginSignup/Login';
+import Alert from './components/Alert/Alert';
+import Navbar from './components/Navbar/Navbar';
+import Info from './components/Info/Info';
+import Signup from './components/LoginSignup/signup';
+import ForgotPassword from './components/ForgotPassword/ForgotPassword';
+import ResetPassword from './components/ResetPassword/ResetPassword';
+import Admin from './components/Sidebar/Admin';
+import TableShow from './components/TableShow/TableShow';
 // import List from './components/List';
-import Add from './components/Add';
-import List from './components/List';
+import Add from './components/Add/Add';
+import List from './components/List/List';
 
 
 function App() {

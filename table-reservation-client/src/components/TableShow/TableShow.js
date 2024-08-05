@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import Sidebar from './Sidebar/Sidebar';
-import CustomSpinner from './CustomSpinner'; // Import custom spinner
+import Sidebar from '../Sidebar/Sidebar';
+import CustomSpinner from '../CustomSpinner/CustomSpinner'; // Import custom spinner
 import './TableShow.css';
 
 function TableShow(props) {

@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
 import './Add.css'
-import { assets } from '../assets/assets'
+import { assets } from '../../assets/assets'
 import axios from 'axios'
 import { toast } from 'react-toastify'
-import Sidebar from './Sidebar/Sidebar'
+import Sidebar from '../../components/Sidebar/Sidebar'
 
 const Add = () => {
 

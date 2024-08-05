@@ -1,6 +1,6 @@
 import React from 'react';
 import { format } from 'date-fns';
-import { assets } from '../assets/assets'
+import { assets } from '../../assets/assets'
 import './FoodItem.css';
 
 const FoodItem = ({ name, description, price, image,date}) => {

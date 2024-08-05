@@ -2,9 +2,9 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { Nav, Tab, Row, Col } from "react-bootstrap";
-import FoodDisplay from "./FoodDisplay";
+import FoodDisplay from "../../components/FoodDisplay/FoodDisplay"
 import './UserPanel.css';
-import CustomSpinner from "./CustomSpinner"; // Import custom spinner
+import CustomSpinner from "../CustomSpinner/CustomSpinner";
 
 function UserPanel({ showAlert }) {
   let navigate = useNavigate();

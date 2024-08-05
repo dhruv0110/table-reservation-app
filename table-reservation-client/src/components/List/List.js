@@ -3,8 +3,8 @@ import React, { useState, useEffect } from 'react';
 import './List.css';
 import axios from 'axios';
 import { toast } from 'react-toastify';
-import Sidebar from './Sidebar/Sidebar';
-import CrossIcon from './CrossIcon'; // Import the CrossIcon component
+import Sidebar from '../../components/Sidebar/Sidebar'
+import CrossIcon from '../CrossIcon/CrossIcon';
 
 const List = () => {
   const [list, setList] = useState([]);

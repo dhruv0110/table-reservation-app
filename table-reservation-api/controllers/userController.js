@@ -106,13 +106,13 @@ const forgotPassword = async (req, res) => {
         const transporter = nodemailer.createTransport({
             service: 'gmail',
             auth: {
-                user: 'your-email@gmail.com',
-                pass: 'your-email-password'
+                user: 'dhruvsheth01102003@gmail.com',
+                pass: 'jhhozekydjsadaao'
             }
         });
 
         const mailOptions = {
-            from: 'your-email@gmail.com',
+            from: 'dhruvsheth01102003@gmail.com',
             to: email,
             subject: 'Reset Password from TastyFlow',
             text: `Your OTP is ${otp}`

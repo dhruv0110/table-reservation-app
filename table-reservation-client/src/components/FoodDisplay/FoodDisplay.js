@@ -1,6 +1,6 @@
 import React from 'react'
 import './FoodDisplay.css'
-import FoodItem from '../components/FoodItem'
+import FoodItem from '../FoodItem/FoodItem'
 
 const FoodDisplay = ({ category, food_list }) => {
   return (
