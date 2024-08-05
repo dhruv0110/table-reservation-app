@@ -3,7 +3,9 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const tableRoutes = require('./routes/tables');
 const userRoutes = require('./routes/users');
-const foodRoute = require("./routes/foodRoute")
+const foodRoute = require("./routes/foodRoute");
+const cron = require('node-cron');
+const Table = require('./models/Table');
 require('dotenv').config();
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -28,6 +30,31 @@ const connectToMongo = () => {
   }
 }
 connectToMongo();
+
+
+
+// Unreserve tables that have expired reservations
+const unreserveExpiredTables = async () => {
+  try {
+    const now = new Date();
+    const tables = await Table.find({
+      reservationExpiry: { $lte: now },
+    });
+
+    tables.forEach(async (table) => {
+      table.reserved = false;
+      table.reservedBy = null;
+      table.reservationExpiry = null;
+      await table.save();
+    });
+  } catch (error) {
+    console.error('Error unreserving expired tables:', error);
+  }
+};
+
+// Schedule the job to run every minute
+cron.schedule('* * * * *', unreserveExpiredTables);
+
 
 app.use('/api/tables', tableRoutes);
 app.use('/api/users', userRoutes); 

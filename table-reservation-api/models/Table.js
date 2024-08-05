@@ -15,6 +15,10 @@ const tableSchema = new mongoose.Schema({
     ref: 'User',
     default: null,
   },
+  reservationExpiry: {
+    type: Date,
+    default: null,
+  },
 });
 
 module.exports = mongoose.model('Table', tableSchema);

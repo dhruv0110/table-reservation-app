@@ -38,7 +38,7 @@ const CustomButton = () => {
             </svg>
           </div>
           <p style={{marginTop:"15px"}}>
-            <span style={{ '--i': 0 ,fontSize:"30px"}}>S</span>
+            <span style={{ '--i': 0 ,fontSize:"30px",marginLeft:"10px"}}>S</span>
             <span style={{ '--i': 1,fontSize:"30px" }}>e</span>
             <span style={{ '--i': 2,fontSize:"30px" }}>n</span>
             <span style={{ '--i': 3,fontSize:"30px" }}>d</span>

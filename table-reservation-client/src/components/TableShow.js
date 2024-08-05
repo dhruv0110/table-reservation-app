@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Sidebar from './Sidebar/Sidebar';
-import './TableShow.css'; // Import the CSS file
+import CustomSpinner from './CustomSpinner'; // Import custom spinner
+import './TableShow.css';
 
 function TableShow(props) {
   const [tables, setTables] = useState([]);
   const [tableNumber, setTableNumber] = useState('');
+  const [loadingTable, setLoadingTable] = useState(null); // State for loading spinner
 
   useEffect(() => {
     fetchTables();
@@ -24,8 +26,8 @@ function TableShow(props) {
     try {
       await axios.post('http://localhost:5000/api/tables/add', { number: tableNumber });
       props.showAlert('Table added', 'success');
-      fetchTables(); // Refresh the table list to reflect changes
-      setTableNumber(''); // Clear input field
+      fetchTables();
+      setTableNumber('');
     } catch (error) {
       console.error('Error adding table:', error);
       props.showAlert('Error adding table', 'error');
@@ -36,7 +38,7 @@ function TableShow(props) {
     try {
       await axios.delete('http://localhost:5000/api/tables/delete', { data: { number } });
       props.showAlert('Table deleted', 'success');
-      fetchTables(); // Refresh the table list to reflect changes
+      fetchTables();
     } catch (error) {
       console.error('Error deleting table:', error);
       props.showAlert('Error deleting table', 'error');
@@ -45,6 +47,7 @@ function TableShow(props) {
 
   const unreserveTable = async (number) => {
     try {
+      setLoadingTable(number); // Set loading state
       const token = localStorage.getItem('token');
       if (!token) {
         console.error('No token found');
@@ -54,19 +57,18 @@ function TableShow(props) {
       await axios.post('http://localhost:5000/api/tables/admin/unreserve', 
         { number }, 
         {
-          headers: {
-            'auth-token': token,
-          },
+          headers: { 'auth-token': token },
         }
       );
       props.showAlert('Table unreserved', 'success');
-      fetchTables(); // Refresh the table list to reflect changes
+      fetchTables();
     } catch (error) {
       console.error('Error unreserving table:', error);
+    } finally {
+      setLoadingTable(null); // Reset loading state
     }
   };
 
-  // Sort tables by number in ascending order
   const sortedTables = [...tables].sort((a, b) => a.number - b.number);
 
   return (
@@ -90,7 +92,13 @@ function TableShow(props) {
                 onClick={() => table.reserved && unreserveTable(table.number)}
                 className={table.reserved ? 'unreserve-button' : 'reserve-button'}
               >
-                Table {table.number}
+                {loadingTable === table.number ? (
+                  <div className="spinner-container">
+                    <CustomSpinner />
+                  </div>
+                ) : (
+                  `Table ${table.number}`
+                )}
               </button>
               {table.reserved && (
                 <div className='reserved-info'>

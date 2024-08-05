@@ -1,27 +1,27 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { Nav, Tab, Row, Col, Spinner } from "react-bootstrap";
+import { Nav, Tab, Row, Col } from "react-bootstrap";
 import FoodDisplay from "./FoodDisplay";
 import './UserPanel.css';
+import CustomSpinner from "./CustomSpinner"; // Import custom spinner
 
 function UserPanel({ showAlert }) {
   let navigate = useNavigate();
   const [tables, setTables] = useState([]);
   const [userId, setUserId] = useState("");
-  const [foodList, setFoodList] = useState([]); // State to store food list
+  const [foodList, setFoodList] = useState([]);
   const [category, setCategory] = useState("All");
-  const [loadingTable, setLoadingTable] = useState(null); // Track the table number being reserved
+  const [loadingTable, setLoadingTable] = useState(null);
 
   useEffect(() => {
     if (localStorage.getItem("token")) {
       fetchUserDetails();
       fetchTables();
-      fetchFoodList(); // Fetch food data when component mounts
+      fetchFoodList();
     } else {
       navigate("/login");
     }
-    // eslint-disable-next-line
   }, []);
 
   const fetchUserDetails = async () => {
@@ -56,7 +56,7 @@ function UserPanel({ showAlert }) {
   const fetchFoodList = async () => {
     try {
       const response = await axios.get("http://localhost:5000/api/food/list");
-      setFoodList(response.data.data); // Update state with food data
+      setFoodList(response.data.data);
     } catch (error) {
       console.error("Error fetching food list:", error);
       showAlert("Error fetching food list", "danger");
@@ -65,7 +65,7 @@ function UserPanel({ showAlert }) {
 
   const toggleReservation = async (number, isReserved, reservedBy) => {
     try {
-      setLoadingTable(number); // Set loading state for the table being reserved
+      setLoadingTable(number);
       const token = localStorage.getItem("token");
       if (!token) return;
 
@@ -81,7 +81,7 @@ function UserPanel({ showAlert }) {
       } else if (!isReserved) {
         await axios.post(
           "http://localhost:5000/api/tables/reserve",
-          { number, userId },
+          { number },
           {
             headers: { "auth-token": token },
           }
@@ -92,7 +92,7 @@ function UserPanel({ showAlert }) {
           "You do not have permission to unreserve this table",
           "danger"
         );
-        setLoadingTable(null); // Reset loading state
+        setLoadingTable(null);
         return;
       }
       fetchTables();
@@ -100,11 +100,10 @@ function UserPanel({ showAlert }) {
       console.error("Error toggling reservation:", error);
       showAlert("Error toggling reservation", "danger");
     } finally {
-      setLoadingTable(null); // Reset loading state
+      setLoadingTable(null);
     }
   };
 
-  // Sort tables by number in ascending order
   const sortedTables = [...tables].sort((a, b) => a.number - b.number);
 
   return (
@@ -144,7 +143,9 @@ function UserPanel({ showAlert }) {
                         disabled={loadingTable === table.number || (table.reserved && table.reservedBy?._id !== userId)}
                       >
                         {loadingTable === table.number ? (
-                          <Spinner animation="border" size="sm" style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)" }} />
+                          <div className="spinner-container">
+                            <CustomSpinner /> {/* Use custom spinner */}
+                          </div>
                         ) : (
                           `Table ${table.number}`
                         )}
@@ -160,7 +161,7 @@ function UserPanel({ showAlert }) {
               </Tab.Pane>
               <Tab.Pane eventKey="food">
                 <h2>Food List</h2>
-                <FoodDisplay category={category} food_list={foodList} /> {/* Pass foodList as prop */}
+                <FoodDisplay category={category} food_list={foodList} />
               </Tab.Pane>
             </Tab.Content>
           </Col>
