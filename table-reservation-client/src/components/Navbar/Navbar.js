@@ -1,17 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useNavigate, useLocation } from 'react-router-dom';
+import './Navbar.css';
+import logo from "../../assets/logo.svg"
 
 const Navbar = (props) => {
   let location = useLocation();
   let navigate = useNavigate();
-
-  // const [adminpanel, setAdminpanel] = useState("admin");
-  const [userDetails, setUserDetails] = useState({ name: "", email: "", id: "" });
+  const [userDetails, setUserDetails] = useState({ name: "", email: "", id: "", role: "" });
 
   const logOut = () => {
     localStorage.removeItem('token');
-    // setAdminpanel("");
     props.showAlert("Logout Successfully", "success");
     navigate("/login");
   };
@@ -39,8 +38,9 @@ const Navbar = (props) => {
       return null;
     }
   };
+
   const handleAdminClick = () => {
-    props.showAlert("Come to admin panel","success");
+    props.showAlert("Come to admin panel", "success");
   };
 
   useEffect(() => {
@@ -54,22 +54,20 @@ const Navbar = (props) => {
       if (userData) {
         setUserDetails(userData);
       } else {
-        setUserDetails({ name: "", email: "", id: "" });
+        setUserDetails({ name: "", email: "", id: "", role: "" });
       }
     };
 
     getUserDetails();
-  },  [localStorage.getItem("token")]);
-
- 
+  }, [localStorage.getItem("token")]);
 
   return (
     <div>
-      <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div className="container-fluid">
-        {
-          userDetails.role === "admin"?<Link className="navbar-brand" to="/">Admin</Link> : <Link className="navbar-brand" to="/">User</Link> 
-        }
+      <nav className="navbar navbar-expand-lg navbar-dark">
+        <div className="container navbar-container">
+          <Link className="navbar-brand" to="/">
+            <img src={logo} alt="Logo" className="navbar-logo" />
+          </Link>
           <button
             className="navbar-toggler"
             type="button"
@@ -82,7 +80,7 @@ const Navbar = (props) => {
             <span className="navbar-toggler-icon"></span>
           </button>
           <div className="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul className="navbar-nav me-auto mb-2 mb-lg-0">
+            <ul className="navbar-nav">
               <li className="nav-item">
                 <Link
                   className={`nav-link ${
@@ -94,39 +92,48 @@ const Navbar = (props) => {
                   Home
                 </Link>
               </li>
+              <li className="nav-item">
+                <Link className="nav-link">About</Link>
+              </li>
+              <li className="nav-item">
+                <Link className="nav-link">Menu</Link>
+              </li>
+              <li className="nav-item">
+                <Link className="nav-link">Recipe</Link>
+              </li>
             </ul>
             {localStorage.getItem("token") ? (
-              <div className="d-flex align-items-center" style={{display:'flex'}}>
+              <div className="right-box d-flex align-items-center mt-2">
                 {userDetails.role === 'admin' && 
+                <>
                   <Link 
-                    className="btn" 
+                    className="btn admin-btn" 
                     role="button" 
                     to="/admin" 
-                    style={{marginRight: "10px", color:"white", backgroundColor:"#373838", border:"1px solid #c4c2c2"}}
                     onClick={handleAdminClick} // Add onClick handler for the admin button
                   >
-                  Admin
+                    Admin
                   </Link>
+                </>
                 }
-                <button className="btn btn-primary" onClick={logOut}>
+                <Link to="/table-reserve">
+                    <button className="btn order-btn" type="button">Reserve now</button>
+                  </Link>
+                <button className="btn logout-btn" onClick={logOut}>
                   Logout
                 </button>
-                {(localStorage.getItem('token')) ? 
-                  <Link className="nav-link mx-4" style={{color:'white',fontSize:'20px'}} to="/info">
+                {localStorage.getItem('token') && 
+                  <Link className="nav-link mx-2 user-icon" to="/info">
                     <i className="fa-solid fa-user"></i>
-                  </Link> 
-                  : ""}
+                  </Link>
+                }
               </div>
             ) : (
               <form className="d-flex" role="search">
-                <Link className="btn btn-primary" to="/login" role="button">
+                <Link className="btn auth-btn" to="/login" role="button">
                   Login
                 </Link>
-                <Link
-                  className="btn btn-primary mx-2"
-                  to="/signup"
-                  role="button"
-                >   
+                <Link className="btn auth-btn mx-2" to="/signup" role="button">
                   Signup
                 </Link>
               </form>

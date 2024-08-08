@@ -14,6 +14,7 @@ import TableShow from './components/TableShow/TableShow';
 // import List from './components/List';
 import Add from './components/Add/Add';
 import List from './components/List/List';
+import TableComponent from './components/TableComponent';
 
 
 function App() {
@@ -76,13 +77,14 @@ function App() {
     <Router>
       <Navbar showAlert={showAlert}/>
       <Alert alert={alert} />
-      <Routes>
+      <Routes>    
+        <Route path="/" element={<UserPanel showAlert={showAlert}/>} />
         <Route path="/login" element={<Login showAlert={showAlert} />} />
         <Route path="/signup" element={<Signup showAlert={showAlert} />} />
-        <Route path="/" element={<UserPanel showAlert={showAlert}/>} />
         <Route path="/info" element={<Info showAlert={showAlert} />} />
         <Route path="/forgot-password" element={<ForgotPassword showAlert={showAlert} />}></Route>
         <Route path="/reset-password" element={<ResetPassword showAlert={showAlert} />} />
+        <Route path="/table-reserve" element={<TableComponent showAlert={showAlert} />} />
         {userDetails?.role === 'admin' && (
           <>          
         <Route path="/admin" element={<Admin showAlert={showAlert} />} />

@@ -36,7 +36,7 @@ const Alert = (props) => {
 
     return (
         <div>
-           <ToastContainer style={{marginTop:"45px"}}/>
+           <ToastContainer style={{marginTop:"120px"}}/>
         </div>
     );
 }
