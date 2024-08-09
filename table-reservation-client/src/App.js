@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import UserPanel from './components/UserPanel/UserPanel';
-// import AdminPanel from './components/TableShow';
 import Login from './components/LoginSignup/Login';
 import Alert from './components/Alert/Alert';
 import Navbar from './components/Navbar/Navbar';
@@ -11,31 +10,34 @@ import ForgotPassword from './components/ForgotPassword/ForgotPassword';
 import ResetPassword from './components/ResetPassword/ResetPassword';
 import Admin from './components/Sidebar/Admin';
 import TableShow from './components/TableShow/TableShow';
-// import List from './components/List';
 import Add from './components/Add/Add';
 import List from './components/List/List';
-import TableComponent from './components/TableComponent';
+import TableComponent from './components/TableComponent/TableComponent';
 
+function PrivateRoute({ element, ...rest }) {
+  const token = localStorage.getItem("token");
+  return token ? element : <Navigate to="/login" />;
+}
+
+function AdminRoute({ element, ...rest }) {
+  const userDetails = JSON.parse(localStorage.getItem("userDetails"));
+  return userDetails?.role === 'admin' ? element : <Navigate to="/" />;
+}
 
 function App() {
   const [alert, setAlert] = useState(null);
-  const [userDetails, setUserDetails] = useState(null); // Store user details here
-  const [loading, setLoading] = useState(true); // Add loading state
+  const [userDetails, setUserDetails] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   const showAlert = (message, type) => {
-    setAlert({
-      message: message,
-      type: type,
-    });
-    setTimeout(() => {
-      setAlert(null);
-    }, 1500);
+    setAlert({ message, type });
+    setTimeout(() => setAlert(null), 1500);
   };
 
   const fetchUserDetails = async () => {
     try {
       const token = localStorage.getItem("token");
-      if (!token) return null; // Return null if token is not available
+      if (!token) return null;
 
       const response = await fetch("http://localhost:5000/api/users/getuser", {
         method: "POST",
@@ -46,13 +48,13 @@ function App() {
       });
 
       if (response.ok) {
-        return await response.json(); // Return the fetched user's details
+        return await response.json();
       } else {
-        return null; // Return null if fetch fails
+        return null;
       }
     } catch (error) {
       console.error("Error fetching user details:", error.message);
-      return null; // Return null if an error occurs
+      return null;
     }
   };
 
@@ -60,7 +62,9 @@ function App() {
     const getUserDetails = async () => {
       const userData = await fetchUserDetails();
       setUserDetails(userData);
-      setLoading(false); // Set loading to false after fetching data
+      localStorage.setItem("userDetails", JSON.stringify(userData));
+      setLoading(false);
+
       if (!userData && localStorage.getItem("token")) {
         localStorage.removeItem("token");
       }
@@ -70,31 +74,26 @@ function App() {
   }, []);
 
   if (loading) {
-    return <div>Loading...</div>; // Render a loading indicator while fetching data
+    return <div>Loading...</div>;
   }
 
   return (
     <Router>
-      <Navbar showAlert={showAlert}/>
+      <Navbar showAlert={showAlert} userDetails={userDetails} />
       <Alert alert={alert} />
-      <Routes>    
-        <Route path="/" element={<UserPanel showAlert={showAlert}/>} />
+      <Routes>
+        <Route path="/" element={<UserPanel showAlert={showAlert} />} />
         <Route path="/login" element={<Login showAlert={showAlert} />} />
         <Route path="/signup" element={<Signup showAlert={showAlert} />} />
-        <Route path="/info" element={<Info showAlert={showAlert} />} />
-        <Route path="/forgot-password" element={<ForgotPassword showAlert={showAlert} />}></Route>
+        <Route path="/info" element={<PrivateRoute element={<Info showAlert={showAlert} />} />} />
+        <Route path="/forgot-password" element={<ForgotPassword showAlert={showAlert} />} />
         <Route path="/reset-password" element={<ResetPassword showAlert={showAlert} />} />
-        <Route path="/table-reserve" element={<TableComponent showAlert={showAlert} />} />
-        {userDetails?.role === 'admin' && (
-          <>          
-        <Route path="/admin" element={<Admin showAlert={showAlert} />} />
-        <Route path="/admin/table" element={<TableShow showAlert={showAlert} />} />
-        <Route path="/list" element={<List showAlert={showAlert} />} />
-        <Route path="/admin/add" element={<Add showAlert={showAlert} />} />
-        </>
-        )}
+        <Route path="/table-reserve" element={localStorage.getItem("token") ? <TableComponent showAlert={showAlert} /> : <Navigate to="/login" />} />
+        <Route path="/admin" element={<AdminRoute element={<Admin showAlert={showAlert} />} />} />
+        <Route path="/admin/table" element={<AdminRoute element={<TableShow showAlert={showAlert} />} />} />
+        <Route path="/list" element={<AdminRoute element={<List showAlert={showAlert} />} />} />
+        <Route path="/admin/add" element={<AdminRoute element={<Add showAlert={showAlert} />} />} />
         <Route path="*" element={<Navigate to="/" />} />
-          
       </Routes>
     </Router>
   );

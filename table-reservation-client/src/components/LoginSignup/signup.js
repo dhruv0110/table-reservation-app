@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import './Signup.css'; // Import the CSS file
 
 const Signup = (props) => {
   const [credentials, setCredentials] = useState({
@@ -51,31 +52,33 @@ const Signup = (props) => {
   };
 
   return (
-    <div className='container my-4'>
-      <h1>Sign Up</h1>
-      <form onSubmit={handleSubmit}>
-        <div className="mb-3 my-4">
-          <label htmlFor="name" className="form-label">Name</label>
-          <input type="text" className="form-control" id="name" name='name' onChange={onChange} aria-describedby="nameHelp" />
-        </div>
-        <div className="mb-3">
-          <label htmlFor="email" className="form-label">Email address</label>
-          <input type="email" className="form-control" id="email" name='email' onChange={onChange} aria-describedby="emailHelp" />
-        </div>
-        <div className="mb-3">
-          <label htmlFor="contact" className="form-label">Contact Number</label>
-          <input type="text" className="form-control" id="contact" name='contact' onChange={onChange} aria-describedby="contactHelp" />
-        </div>
-        <div className="mb-3">
-          <label htmlFor="password" className="form-label">Password</label>
-          <input type="password" className="form-control" id="password" name='password' onChange={onChange} required minLength={5} />
-        </div>
-        <div className="mb-3">
-          <label htmlFor="cpassword" className="form-label">Confirm Password</label>
-          <input type="password" className="form-control" id="cpassword" name='cpassword' onChange={onChange} required minLength={5} />
-        </div>
-        <button type="submit" className="btn btn-primary">Submit</button>
-      </form>
+    <div className='signup-container'>
+      <div className='signup-card'>
+        <h1 className='signup-heading'>Sign Up</h1>
+        <form onSubmit={handleSubmit} className='signup-form'>
+          <div className="form-group">
+            <label htmlFor="name" className="form-label">Name</label>
+            <input type="text" className="form-input" id="name" name='name' onChange={onChange} aria-describedby="nameHelp" />
+          </div>
+          <div className="form-group">
+            <label htmlFor="email" className="form-label">Email address</label>
+            <input type="email" className="form-input" id="email" name='email' onChange={onChange} aria-describedby="emailHelp" />
+          </div>
+          <div className="form-group">
+            <label htmlFor="contact" className="form-label">Contact Number</label>
+            <input type="text" className="form-input" id="contact" name='contact' onChange={onChange} aria-describedby="contactHelp" />
+          </div>
+          <div className="form-group">
+            <label htmlFor="password" className="form-label">Password</label>
+            <input type="password" className="form-input" id="password" name='password' onChange={onChange} required minLength={5} />
+          </div>
+          <div className="form-group">
+            <label htmlFor="cpassword" className="form-label">Confirm Password</label>
+            <input type="password" className="form-input" id="cpassword" name='cpassword' onChange={onChange} required minLength={5} />
+          </div>
+          <button type="submit" className="submit-btn">Submit</button>
+        </form>
+      </div>
     </div>
   );
 };

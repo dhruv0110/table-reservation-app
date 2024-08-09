@@ -1,8 +1,13 @@
-import React from 'react'
-import './FoodDisplay.css'
-import FoodItem from '../FoodItem/FoodItem'
+import React from 'react';
+import './FoodDisplay.css';
+import FoodItem from '../FoodItem/FoodItem';
 
 const FoodDisplay = ({ category, food_list }) => {
+  // Check if food_list exists and has items before mapping
+  if (!food_list || food_list.length === 0) {
+    return <div>No food items available.</div>;
+  }
+
   return (
     <div className='food-display' id='food-display'>
       <h2>Top dishes near you</h2>
@@ -17,7 +22,7 @@ const FoodDisplay = ({ category, food_list }) => {
                 description={item.description} 
                 price={item.price} 
                 image={item.image}
-                date = {item.date}
+                date={item.date}
               />
             );
           }
@@ -25,7 +30,7 @@ const FoodDisplay = ({ category, food_list }) => {
         })}
       </div>
     </div>
-  )
+  );
 }
 
-export default FoodDisplay
+export default FoodDisplay;

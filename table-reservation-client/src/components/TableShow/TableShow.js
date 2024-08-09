@@ -74,7 +74,7 @@ function TableShow(props) {
   return (
     <div style={{ display: "flex" }}>
       <Sidebar />
-      <div className='container my-5'>
+      <div className='table-show'>
         <h2>Tables Reservation</h2>
         <div className='table-input-container'>
           <input 

@@ -1,44 +1,66 @@
-.sidebar{
+/* src/components/Sidebar/Sidebar.css */
+
+.sidebar {
     width: 350px;
     min-height: 100vh;
+    background-color: #1B1C1F; /* Same dark background color */
     border: 1.5px solid #a9a9a9;
-    border-top: 0;
-    font-size: max(1vw,10px);
+    border-top: 1.5px solid #a9a9a9;
+    font-size: max(1vw, 10px);
+    padding-top: 2rem;
+    margin-left: -1px;
 }
 
-.sidebar-options{
-    padding-top: 50px;
+.sidebar-options {
     padding-left: 20%;
     display: flex;
     flex-direction: column;
-    /* justify-content: center; */
-    gap: 20px;
+    gap: 1.5rem; /* Increase gap for better spacing */
 }
 
-.sidebar-option{
+.sidebar-option {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 1rem;
     border: 1px solid #a9a9a9;
     border-right: 0;
-    padding: 15px 10px;
+    padding: 1rem;
     border-radius: 3px 0px 0px 3px;
     cursor: pointer;
     text-decoration: none;
-    color: black;
-
+    color: #fff; /* Use white color for text */
+    background-color: #333; /* Dark background for options */
+    transition: background-color 0.3s ease, border-color 0.3s ease;
 }
+
+.sidebar-option img {
+    filter: invert(100%); /* Invert icon colors to white */
+    width: 24px; /* Ensure consistent icon size */
+    height: 24px;
+}
+
 .sidebar-option p {
     margin-bottom: 0;
+    font-size: 1.2rem; /* Consistent font size */
 }
 
-.sidebar-option.active{
-    background-color: #fff0ed;
-    border-color: tomato;
+.sidebar-option:hover {
+    background-color: #444; /* Slightly lighter on hover */
 }
 
-@media(max-width:900px){
-    .sidebar-option p{
+.sidebar-option.active {
+    background-color: #ff4135; /* Highlight active option */
+    border-color: #ff4135; /* Match border color with background */
+}
+
+@media (max-width: 900px) {
+    .sidebar {
+        width: 100px; /* Narrower sidebar on small screens */
+    }
+    .sidebar-option p {
         display: none;
+    }
+    .sidebar-option img {
+        margin: auto; /* Center icons when text is hidden */
     }
 }

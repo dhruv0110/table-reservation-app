@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useNavigate, useLocation } from 'react-router-dom';
 import './Navbar.css';
-import logo from "../../assets/logo.svg"
+import logo from "../../assets/logo.svg";
 
 const Navbar = (props) => {
   let location = useLocation();
@@ -11,55 +11,42 @@ const Navbar = (props) => {
 
   const logOut = () => {
     localStorage.removeItem('token');
+    localStorage.removeItem('userDetails');
+    setUserDetails({ name: "", email: "", id: "", role: "" }); // Clear user details state
     props.showAlert("Logout Successfully", "success");
     navigate("/login");
-  };
-
-  const fetchUserDetails = async () => {
-    try {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        return null;
-      }
-      const response = await fetch("http://localhost:5000/api/users/getuser", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "auth-token": token,
-        },
-      });
-      if (response.ok) {
-        return await response.json();
-      } else {
-        return null;
-      }
-    } catch (error) {
-      console.error("Error fetching user details:", error.message);
-      return null;
-    }
   };
 
   const handleAdminClick = () => {
     props.showAlert("Come to admin panel", "success");
   };
 
+  const updateUserDetailsFromLocalStorage = () => {
+    const storedUserDetails = JSON.parse(localStorage.getItem("userDetails"));
+    if (storedUserDetails) {
+      setUserDetails(storedUserDetails);
+    } else {
+      setUserDetails({ name: "", email: "", id: "", role: "" });
+    }
+  };
+
   useEffect(() => {
-    const getUserDetails = async () => {
-      const userData = await fetchUserDetails();
-      if (localStorage.getItem("token")) {
-        setUserDetails(userData);
-      } else {
-        navigate("/login");
-      }
-      if (userData) {
-        setUserDetails(userData);
+    updateUserDetailsFromLocalStorage();
+  }, [localStorage.getItem("token")]); // Dependency on token to re-fetch user details
+
+  // Handle token change explicitly
+  useEffect(() => {
+    const handleTokenChange = () => {
+      const token = localStorage.getItem("token");
+      if (token) {
+        updateUserDetailsFromLocalStorage();
       } else {
         setUserDetails({ name: "", email: "", id: "", role: "" });
       }
     };
 
-    getUserDetails();
-  }, [localStorage.getItem("token")]);
+    handleTokenChange();
+  }, []);
 
   return (
     <div>
@@ -82,62 +69,36 @@ const Navbar = (props) => {
           <div className="collapse navbar-collapse" id="navbarSupportedContent">
             <ul className="navbar-nav">
               <li className="nav-item">
-                <Link
-                  className={`nav-link ${
-                    location.pathname === "/" ? "active" : ""
-                  }`}
-                  aria-current="page"
-                  to="/"
-                >
-                  Home
-                </Link>
+                <Link className={`nav-link ${location.pathname === "/" ? "active" : ""}`} aria-current="page" to="/">Home</Link>
               </li>
-              <li className="nav-item">
-                <Link className="nav-link">About</Link>
-              </li>
-              <li className="nav-item">
-                <Link className="nav-link">Menu</Link>
-              </li>
-              <li className="nav-item">
-                <Link className="nav-link">Recipe</Link>
-              </li>
+              <li className="nav-item"><Link className="nav-link">About</Link></li>
+              <li className="nav-item"><Link className="nav-link">Menu</Link></li>
+              <li className="nav-item"><Link className="nav-link">Recipe</Link></li>
             </ul>
-            {localStorage.getItem("token") ? (
-              <div className="right-box d-flex align-items-center mt-2">
-                {userDetails.role === 'admin' && 
-                <>
-                  <Link 
-                    className="btn admin-btn" 
-                    role="button" 
-                    to="/admin" 
-                    onClick={handleAdminClick} // Add onClick handler for the admin button
-                  >
-                    Admin
-                  </Link>
-                </>
-                }
+            <div className="right-box d-flex align-items-center mt-2">
+              {/* Show "Reserve now" button only if the user is not an admin */}
+              {userDetails.role !== 'admin' && (
                 <Link to="/table-reserve">
-                    <button className="btn order-btn" type="button">Reserve now</button>
-                  </Link>
-                <button className="btn logout-btn" onClick={logOut}>
-                  Logout
-                </button>
-                {localStorage.getItem('token') && 
-                  <Link className="nav-link mx-2 user-icon" to="/info">
+                  <button className="btn order-btn" type="button">Reserve now</button>
+                </Link>
+              )}
+              {localStorage.getItem("token") ? (
+                <>
+                  {userDetails.role === 'admin' &&
+                    <Link className="btn admin-btn mx-2" role="button" to="/admin" onClick={handleAdminClick}>Admin</Link>
+                  }
+                  <button className="btn logout-btn mx-2" onClick={logOut}>Logout</button>
+                  <Link className="nav-link user-icon" to="/info">
                     <i className="fa-solid fa-user"></i>
                   </Link>
-                }
-              </div>
-            ) : (
-              <form className="d-flex" role="search">
-                <Link className="btn auth-btn" to="/login" role="button">
-                  Login
-                </Link>
-                <Link className="btn auth-btn mx-2" to="/signup" role="button">
-                  Signup
-                </Link>
-              </form>
-            )}
+                </>
+              ) : (
+                <form className="d-flex" role="search">
+                  <Link className="btn auth-btn mx-2" to="/login" role="button">Login</Link>
+                  <Link className="btn auth-btn" to="/signup" role="button">Signup</Link>
+                </form>
+              )}
+            </div>
           </div>
         </div>
       </nav>

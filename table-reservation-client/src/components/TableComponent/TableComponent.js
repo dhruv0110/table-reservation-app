@@ -2,8 +2,8 @@
 
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import CustomSpinner from '../components/CustomSpinner/CustomSpinner';
-// import './TableComponent.css';
+import CustomSpinner from '../CustomSpinner/CustomSpinner';
+import './TableComponent.css';
 
 const TableComponent = ({ showAlert }) => {
   const [tables, setTables] = useState([]);
@@ -89,6 +89,9 @@ const TableComponent = ({ showAlert }) => {
 
   return (
     <div className="table-container">
+      <div className="table-heading">
+        <h1>Reserve Your Table</h1>
+      </div>
       <div className="table-button-container">
         {sortedTables.map((table) => (
           <div key={table.number} className="table-button">

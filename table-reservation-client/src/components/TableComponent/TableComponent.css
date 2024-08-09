@@ -1,0 +1,91 @@
+/* src/components/TableComponent/TableComponent.css */
+
+.table-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background-color: #1B1C1F;
+    color: #fff;
+    padding: 2rem; /* Increase padding for a more spacious layout */
+    box-sizing: border-box;
+}
+
+.table-heading {
+    margin-bottom: 2rem;
+    color: #ff4135;
+    text-align: center;
+    font-size: 2.5rem; /* Increase font size */
+}
+
+.table-button-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1.5rem; /* Increase gap between buttons */
+    width: 100%;
+    max-width: 900px; /* Increase max-width to accommodate wider layout */
+}
+
+.table-button {
+    width: calc(33.33% - 1.5rem); /* Three buttons per row with increased gap */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.table-button-button {
+    width: 100%;
+    padding: 1.5rem; /* Increase padding for larger buttons */
+    background-color: #333;
+    color: #fff;
+    border: none;
+    border-radius: 6px; /* Slightly rounder corners */
+    font-size: 1.2rem; /* Increase font size */
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    position: relative;
+}
+
+.table-button-button.reserved {
+    background-color: #ff4135;
+    color: #fff;
+}
+
+.table-button-button.loading {
+    background-color: #444;
+    cursor: wait;
+}
+
+.table-button-button:hover:not(.reserved):not(.loading) {
+    background-color: #555;
+}
+
+.table-button-reserved {
+    margin-top: 0.5rem;
+    color: #ff4135;
+    font-weight: bold;
+    font-size: 1rem; /* Slightly increase the reserved text size */
+}
+
+/* Spinner container for loading state */
+.spinner-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Media query for smaller screens */
+@media (max-width: 600px) {
+    .table-button {
+        width: 100%; /* Stack buttons vertically on small screens */
+    }
+    .table-heading {
+        font-size: 2rem; /* Adjust heading size for smaller screens */
+    }
+    .table-button-button {
+        padding: 1rem; /* Adjust button padding for smaller screens */
+        font-size: 1rem; /* Adjust font size for smaller screens */
+    }
+}

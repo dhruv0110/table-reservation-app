@@ -47,7 +47,7 @@ const Add = () => {
   return (
   <div style={{display:"flex"}}>
     <Sidebar/>
-    <div className='add' style={{width:"100%",marginLeft:"10px"}} >
+    <div className='add'>
         <form className='flex-col' onSubmit={onSubmitHandler}>
             <div className="add-img-upload flex-col">
                 <p>Upload Image</p>
